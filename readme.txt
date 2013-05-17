@@ -8,7 +8,7 @@ Stable tag: 1.0.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-PayU Paisa Payment Gateway for WooCommerce. Redefining Payments, Simplifying Lives! Empowering any business to collect money online within minutes that helps you sell anything. Beautifully.
+PayU Paisa Payment Gateway for WooCommerce. Start your eStore without an SETUP cost.
 
 == Description ==
 
