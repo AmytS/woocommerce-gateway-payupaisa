@@ -1,9 +1,9 @@
 <?php
 /*
-Plugin Name: WooCommerce - PayU Paisa
+Plugin Name: WooCommerce - PayU Money
 Plugin URI: http://www.kdclabs.com/app/woocommerce-payu-paisa
-Description: PayU Paisa Payment Gateway for WooCommerce. Redefining Payments, Simplifying Lives! Empowering any business to collect money online within minutes that helps you sell anything. Beautifully.
-Version: 1.0.0
+Description: PayU Money Payment Gateway for WooCommerce. Redefining Payments, Simplifying Lives! Empowering any business to collect money online within minutes that helps you sell anything. Beautifully.
+Version: 1.2.3
 Author: _KDC-Labs
 Author URI: http://www.kdclabs.com/
 License: GNU General Public License v3.0
@@ -29,8 +29,8 @@ function woocommerce_payupaisa_init(){
 	class WC_payupaisa extends WC_Payment_Gateway{
 		public function __construct(){
 			$this->id 					= 'payupaisa';
-			$this->icon         		= IMGDIR . 'logo.gif';
-			$this->method_title 		= 'PayU Paisa';
+			$this->icon         		= IMGDIR . 'logo.png';
+			$this->method_title 		= 'PayU Money';
 			$this->method_description	= "Redefining Payments, Simplifying Lives";
 			$this->has_fields 			= false;
 			
@@ -73,7 +73,7 @@ function woocommerce_payupaisa_init(){
 				'enabled' => array(
 					'title' 		=> __('Enable/Disable', 'kdc'),
 					'type' 			=> 'checkbox',
-					'label' 		=> __('Enable PayU Paisa Payment Module.', 'kdc'),
+					'label' 		=> __('Enable PayU Money Payment Module.', 'kdc'),
 					'default' 		=> 'no',
 					'description' 	=> 'Show in the Payment List as a payment option'
 				),
@@ -92,29 +92,29 @@ function woocommerce_payupaisa_init(){
 					'desc_tip' 		=> true
 				),
       			'merchant_id' => array(
-					'title' 		=> __('Merchant ID', 'kdc'),
+					'title' 		=> __('Merchant KEY', 'kdc'),
 					'type' 			=> 'text',
-					'description' 	=> __('Given to Merchant by PayU Paisa'),
+					'description' 	=> __('Given to Merchant by PayU Money'),
 					'desc_tip' 		=> true
 				),
       			'salt' => array(
-					'title' 		=> __('Salt', 'kdc'),
+					'title' 		=> __('Merchant SALT', 'kdc'),
 					'type' 			=> 'text',
-					'description' 	=>  __('Given to Merchant by PayU Paisa', 'kdc'),
+					'description' 	=>  __('Given to Merchant by PayU Money', 'kdc'),
 					'desc_tip' 		=> true
                 ),
       			'testmode' => array(
 					'title' 		=> __('TEST Mode', 'kdc'),
 					'type' 			=> 'checkbox',
-					'label' 		=> __('Enable PayU Paisa TEST Transactions.', 'kdc'),
+					'label' 		=> __('Enable PayU Money TEST Transactions.', 'kdc'),
 					'default' 		=> 'no',
-					'description' 	=> __('Tick to run TEST Transaction on the PayU Paisa platform'),
+					'description' 	=> __('Tick to run TEST Transaction on the PayU Money platform'),
 					'desc_tip' 		=> true
                 ),
       			'redirect_page_id' => array(
 					'title' 		=> __('Return Page'),
 					'type' 			=> 'select',
-					'options' 		=> $this->get_pages('Select Page'),
+					'options' 		=> $this->payupaia_get_pages('Select Page'),
 					'description' 	=> __('URL of success page', 'kdc'),
 					'desc_tip' 		=> true
                 )
@@ -125,7 +125,7 @@ function woocommerce_payupaisa_init(){
          * - Options for bits like 'title' and availability on a country-by-country basis
          **/
 		public function admin_options(){
-			echo '<h3>'.__('PayU Paisa', 'kdc').'</h3>';
+			echo '<h3>'.__('PayU Money', 'kdc').'</h3>';
 			echo '<p>'.__('Redefining Payments, Simplifying Lives! Empowering any business to collect money online within minutes').'</p>';
 			echo '<table class="form-table">';
 			// Generate the HTML For the settings form.
@@ -257,22 +257,22 @@ function woocommerce_payupaisa_init(){
 									$this->msg['message'] = "Thank you for shopping with us. Your account has been charged and your transaction is successful.";
 									$this->msg['class'] = 'woocommerce-message';
 									if($order->status == 'processing'){
-										$order->add_order_note('PayU Paisa ID: '.$_REQUEST['mihpayid'].' ('.$_REQUEST['txnid'].')<br/>PG: '.$_REQUEST['PG_TYPE'].'<br/>Bank Ref: '.$_REQUEST['bank_ref_num']);
+										$order->add_order_note('PayU Money ID: '.$_REQUEST['mihpayid'].' ('.$_REQUEST['txnid'].')<br/>PG: '.$_REQUEST['PG_TYPE'].'<br/>Bank Ref: '.$_REQUEST['bank_ref_num']);
 									}else{
 										$order->payment_complete();
-										$order->add_order_note('PayU Paisa payment successful.<br/>PayU Paisa ID: '.$_REQUEST['mihpayid'].' ('.$_REQUEST['txnid'].')<br/>PG: '.$_REQUEST['PG_TYPE'].'<br/>Bank Ref: '.$_REQUEST['bank_ref_num']);
+										$order->add_order_note('PayU Money payment successful.<br/>PayU Money ID: '.$_REQUEST['mihpayid'].' ('.$_REQUEST['txnid'].')<br/>PG: '.$_REQUEST['PG_TYPE'].'<br/>Bank Ref: '.$_REQUEST['bank_ref_num']);
 										$woocommerce -> cart -> empty_cart();
 									}
 								}else if($status=="pending"){
 									$this->msg['message'] = "Thank you for shopping with us. Right now your payment status is pending. We will keep you posted regarding the status of your order through eMail";
 									$this->msg['class'] = 'woocommerce-info';
-									$order->add_order_note('PayU Paisa payment status is pending<br/>PayU Paisa ID: '.$_REQUEST['mihpayid'].' ('.$_REQUEST['txnid'].')<br/>PG: '.$_REQUEST['PG_TYPE'].'<br/>Bank Ref: '.$_REQUEST['bank_ref_num']);
+									$order->add_order_note('PayU Money payment status is pending<br/>PayU Money ID: '.$_REQUEST['mihpayid'].' ('.$_REQUEST['txnid'].')<br/>PG: '.$_REQUEST['PG_TYPE'].'<br/>Bank Ref: '.$_REQUEST['bank_ref_num']);
 									$order->update_status('on-hold');
 									$woocommerce -> cart -> empty_cart();
 								}else{
 									$this->msg['class'] = 'woocommerce-error';
 									$this->msg['message'] = "Thank you for shopping with us. However, the transaction has been declined.";
-									$order->add_order_note('Transaction ERROR: '.$_REQUEST['error'].'<br/>PayU Paisa ID: '.$_REQUEST['mihpayid'].' ('.$_REQUEST['txnid'].')');
+									$order->add_order_note('Transaction ERROR: '.$_REQUEST['error'].'<br/>PayU Money ID: '.$_REQUEST['mihpayid'].' ('.$_REQUEST['txnid'].')');
 								}
 							}else{
 								$this->msg['class'] = 'error';
@@ -309,7 +309,7 @@ function woocommerce_payupaisa_init(){
 		*/
 		
 		// get all pages
-		function get_pages($title = false, $indent = true) {
+		function payupaia_get_pages($title = false, $indent = true) {
 			$wp_pages = get_pages('sort_column=menu_order');
 			$page_list = array();
 			if ($title) $page_list[] = $title;
